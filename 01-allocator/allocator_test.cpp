@@ -54,7 +54,7 @@ TEST(Allocator, AllocInRange) {
     int size = 500;
 
     Pointer p = a.alloc(size);
-    char* v = reinterpret_cast<char*>(p.get());
+    char* v = reinterpret_cast<char *>(p.get());
 
     EXPECT_GE(v, buf);
     EXPECT_LE(v + size, buf + sizeof(buf));
@@ -68,6 +68,7 @@ TEST(Allocator, AllocReadWrite) {
 
     vector<Pointer> ptr;
     size_t size = 300;
+
     for (int i = 0; i < 20; i++) {
         ptr.push_back(a.alloc(size));
 
@@ -130,7 +131,7 @@ TEST(Allocator, AllocReuse) {
     }
 }
 
-// ====================================================================================================
+// // ====================================================================================================
 
 TEST(Allocator, DefragMove) {
     Allocator a(buf, sizeof(buf));
@@ -155,6 +156,7 @@ TEST(Allocator, DefragMove) {
     }
     // a.cout_dump();
     a.defrag();
+    // std::cout << "after defrag" << std::endl;
     // a.cout_dump();
 
     bool moved = false;
@@ -233,7 +235,7 @@ TEST(Allocator, DefragAvailable) {
     }
 }
 
-// ====================================================================================================
+// // ====================================================================================================
 
 TEST(Allocator, ReallocFromEmpty) {
     Allocator a(buf, sizeof(buf));
@@ -271,12 +273,14 @@ TEST(Allocator, ReallocGrowInplace) {
     writeTo(p, size);
 
     void* ptr = p.get();
+    // a.cout_dump();
     a.realloc(p, size * 2);
     // a.cout_dump();
 
     EXPECT_EQ(p.get(), ptr);
     EXPECT_TRUE(isDataOk(p, size));
 
+    // a.cout_dump();
     Pointer p2 = a.alloc(size);
     writeTo(p, size * 2);
     writeTo(p2, size);
@@ -284,8 +288,10 @@ TEST(Allocator, ReallocGrowInplace) {
     EXPECT_TRUE(isDataOk(p, size * 2));
     EXPECT_TRUE(isDataOk(p2, size));
 
+    // a.cout_dump();
     a.free(p);
     a.free(p2);
+    // a.cout_dump();
 }
 
 TEST(Allocator, ReallocShrink) {
@@ -298,10 +304,14 @@ TEST(Allocator, ReallocShrink) {
     void* ptr = p.get();
     a.realloc(p, size / 2);
 
+    // a.cout_dump();
+
     EXPECT_EQ(p.get(), ptr);
 
     Pointer p2 = a.alloc(size);
     writeTo(p2, size);
+
+    // a.cout_dump();
 
     EXPECT_TRUE(isDataOk(p, size / 2));
     EXPECT_TRUE(isDataOk(p2, size));

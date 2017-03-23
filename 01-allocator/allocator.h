@@ -17,24 +17,37 @@
  */
 class Allocator {
     void *mem;
-    size_t memsize;
-    std::vector<Block> blocks;
+    int memsize;
 public:
-    Allocator(void *base, size_t size);
+    Allocator(void *base, int size);
 
-    Pointer alloc(size_t N);
+    Block get_first();
 
-    void realloc(Pointer& p, size_t N);
+    bool is_last(Block block);
+
+    bool is_first(Block block);
+
+    Block next_block(Block block);
+
+    Block get_next(Block orig_block);
+
+    Block get_prev(Block orig_block);
+
+    Pointer alloc(int N); // check N
 
     void free(Pointer& p);
 
-    void defrag();
-
     void cout_dump();
 
-    void merge(std::vector<Block>::iterator it);
+    void realloc(Pointer &p, int N);
+
+    void defrag();
+
+    void merge(Block block);
 
     Pointer get_pointer(Block block);
+
+    Block get_block(Pointer pointer);
 
     void *get_memory(int id);
 };
