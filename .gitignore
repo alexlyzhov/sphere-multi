@@ -1,2 +1,4 @@
 *.done
 *_test
+*.out
+*_backup.cpp
