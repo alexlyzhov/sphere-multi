@@ -2,3 +2,5 @@
 *_test
 *.out
 *_backup.cpp
+*.dat
+*.txt
