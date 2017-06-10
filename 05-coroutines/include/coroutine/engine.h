@@ -64,17 +64,7 @@ private:
     /**
      * Baseline context
      */
-    context* idle_ctx = nullptr;
-
-    /**
-     * Forward => stack goes up, !forward => stack goes down
-     */
-    bool forward = false;
-
-    /**
-     * Inited => run was called for the first time
-     */
-    bool inited = false;
+    context idle;
 protected:
     /**
      * Save stack of the current coroutine in the given context
@@ -127,9 +117,7 @@ public:
     void start(void (*main)(Ta...), Ta&&... args) {
         // To acquire stack begin, create variable on stack and remember its address
         
-        idle_ctx = new context();
-        if (setjmp(idle_ctx->Environment) > 0) {
-            delete idle_ctx;
+        if (setjmp(idle.Environment) > 0) {
             return;
         }
 
@@ -159,11 +147,6 @@ public:
         // New coroutine context that carries around all information enough to call function
         context* pc = new context();
         pc->caller = cur_routine;
-
-        if (!inited) {
-            forward = (char*) &pc > StackBottom;
-            inited = true;
-        }
 
         // Store current state right here, i.e just before enter new coroutine, later, once it gets scheduled
         // execution starts here. Note that we have to acquire stack of the current function call to ensure
@@ -204,8 +187,6 @@ public:
             // just give up and ask scheduler code to select someone else, control will never returns to this one
             if (next != nullptr) {
                 sched(next);
-            // }
-            // Restore(*idle_ctx);
             } else {
                 yield();
             }

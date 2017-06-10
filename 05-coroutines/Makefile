@@ -9,4 +9,4 @@ tests.done: engine_test
 	./engine_test && touch tests.done
 
 engine_test: $(SRC) $(HDR)
-	g++ -O1 -g -std=c++11 -o engine_test  $(SRC) $(DEPS_FILES) $(TEST_FILES) -Iinclude -I../thirdparty -lpthread -lbfd
+	g++ -O1 -g -std=c++11 -o engine_test  $(SRC) $(DEPS_FILES) $(TEST_FILES) -Iinclude -I../thirdparty -lpthread -lbfd -ldl
